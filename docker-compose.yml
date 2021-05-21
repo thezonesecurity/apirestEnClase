@@ -1,0 +1,37 @@
+version: "3.5"
+services:
+  app:
+    build: .
+    links:
+      - mongo
+      - rabbitmqcontainer
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/opt/app
+      - /opt/app/node_modules
+    environment:
+      DBHOST: "mongodb://172.18.0.2:27017"
+      DATABASE: "seminario"
+  rabbitmqcontainer:
+    image: rabbitmq:3-management
+    hostname: rabbitmqcontainer
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    ports:
+      - 15672:15672
+      - 5672:5672
+      - 5673:5673
+    logging:
+      driver: none
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+    logging:
+      driver: none
+volumes:
+  mongodata:
